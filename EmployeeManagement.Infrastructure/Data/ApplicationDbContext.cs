@@ -1,18 +1,14 @@
 ﻿using EmployeeManagement.Domain.Entities;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Configuration;
 
 namespace EmployeeManagement.Infrastructure.Data;
 
 public class ApplicationDbContext : IdentityDbContext<AppUser>
 {
-    private readonly IConfiguration _configuration;
-    public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options, IConfiguration configuration) : base(options)
-    {
-        _configuration = configuration;
-    }
-    
+    public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options)
+        : base(options) { }
+
     public DbSet<Department> Departments { get; set; }
     public DbSet<Employee> Employees { get; set; }
 

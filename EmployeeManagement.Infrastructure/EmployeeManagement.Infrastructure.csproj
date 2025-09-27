@@ -6,4 +6,15 @@
         <Nullable>enable</Nullable>
     </PropertyGroup>
 
+    <ItemGroup>
+      <Folder Include="Data\" />
+      <Folder Include="Repositories\" />
+      <Folder Include="Specifications\" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <ProjectReference Include="..\EmployeeManagement.Application\EmployeeManagement.Application.csproj" />
+      <ProjectReference Include="..\EmployeeManagement.Domain\EmployeeManagement.Domain.csproj" />
+    </ItemGroup>
+
 </Project>

@@ -1,5 +1,7 @@
 ﻿using EmployeeManagement.Domain.Entities;
+using EmployeeManagement.Domain.Interfaces;
 using EmployeeManagement.Infrastructure.Data;
+using EmployeeManagement.Infrastructure.Repositories;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 
@@ -21,6 +23,10 @@ public static class ApplicationServices
             .AddEntityFrameworkStores<ApplicationDbContext>()
             .AddDefaultTokenProviders();
         services.AddDataProtection();
+        
+        services.AddScoped<IEmployeeRepository, EmployeeRepository>();
+        services.AddScoped<IDepartmentRepository, DepartmentRepository>();
+        services.AddScoped<IUnitOfWork, UnitOfWork>();
 
         return services;
     }

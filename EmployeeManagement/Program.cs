@@ -1,9 +1,17 @@
+using EmployeeManagement.Application.Validators;
 using EmployeeManagement.Extensions;
 using EmployeeManagement.Infrastructure.Data;
+using FluentValidation.AspNetCore;
 
 var builder = WebApplication.CreateBuilder(args);
 
-builder.Services.AddControllers();
+builder.Services.AddControllers()
+    .AddFluentValidation(fv =>
+    {
+        fv.RegisterValidatorsFromAssembly(typeof(RegisterValidator).Assembly);
+    });
+
+
 builder.Services.AddApplicationServices(builder.Configuration);
 builder.Services.AddJwtAuthentication(builder.Configuration);
 builder.Services.AddSwaggerDocumentation();

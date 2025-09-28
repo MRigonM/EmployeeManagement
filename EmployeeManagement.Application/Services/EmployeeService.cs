@@ -4,6 +4,7 @@ using EmployeeManagement.Application.Interfaces;
 using EmployeeManagement.Domain.Common;
 using EmployeeManagement.Domain.Entities;
 using EmployeeManagement.Domain.Interfaces;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 
 namespace EmployeeManagement.Application.Services;
@@ -47,35 +48,43 @@ public class EmployeeService : IEmployeeService
         }
     }
 
-    public async Task<Result<IEnumerable<EmployeeResponseDto>>> GetAllAsync(CancellationToken cancellationToken = default)
+    public async Task<Result<IEnumerable<EmployeeResponseDto>>> GetAllAsync(
+        CancellationToken cancellationToken = default)
     {
         try
         {
             _logger.LogInformation("Retrieving all employees...");
 
-            var employees = await _employeeRepository.GetAllAsync(cancellationToken);
-            
-            if (employees is null)
+            var employees = await _employeeRepository
+                .GetAll()
+                .Include(e => e.Department) 
+                .ToListAsync(cancellationToken);
+
+            if (employees == null || !employees.Any())
                 return Result<IEnumerable<EmployeeResponseDto>>.Failure(EmployeeError.RetrievalError);
 
-            return Result<IEnumerable<EmployeeResponseDto>>.Success(_mapper.Map<IEnumerable<EmployeeResponseDto>>(employees));
+            return Result<IEnumerable<EmployeeResponseDto>>.Success(
+                _mapper.Map<IEnumerable<EmployeeResponseDto>>(employees));
         }
         catch (Exception ex)
         {
             _logger.LogError(ex, "Error retrieving employees");
-            
             return Result<IEnumerable<EmployeeResponseDto>>.Failure(EmployeeError.RetrievalError);
         }
     }
 
-    public async Task<Result<IEnumerable<EmployeeResponseDto>>> GetByDepartmentAsync(int departmentId, CancellationToken cancellationToken = default)
+    public async Task<Result<IEnumerable<EmployeeResponseDto>>> GetByDepartmentAsync(
+        int departmentId,
+        CancellationToken cancellationToken = default)
     {
         try
         {
             _logger.LogInformation("Retrieving Employees for Department: {DepartmentId}", departmentId);
 
-            var employees = await _employeeRepository.GetByDepartmentAsync(departmentId);
-            
+            var employeesQuery = _employeeRepository.GetByDepartment(departmentId);
+
+            var employees = await employeesQuery.ToListAsync(cancellationToken);
+
             return Result<IEnumerable<EmployeeResponseDto>>
                 .Success(_mapper.Map<IEnumerable<EmployeeResponseDto>>(employees));
         }

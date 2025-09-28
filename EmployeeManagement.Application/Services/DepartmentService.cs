@@ -4,6 +4,7 @@ using EmployeeManagement.Application.Interfaces;
 using EmployeeManagement.Domain.Common;
 using EmployeeManagement.Domain.Entities;
 using EmployeeManagement.Domain.Interfaces;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 
 namespace EmployeeManagement.Application.Services;
@@ -46,14 +47,18 @@ public class DepartmentService : IDepartmentService
         }
     }
 
-    public async Task<Result<IEnumerable<DepartmentResponseDto>>> GetAllAsync(CancellationToken cancellationToken = default)
+    public async Task<Result<IEnumerable<DepartmentResponseDto>>> GetAllAsync(
+        CancellationToken cancellationToken = default)
     {
         try
         {
             _logger.LogInformation("Retrieving all departments...");
 
-            var departments = await _departmentRepository.GetAllAsync(cancellationToken);
-            if (departments is null)
+            var departments = await _departmentRepository
+                .GetAll()
+                .ToListAsync(cancellationToken);
+
+            if (departments == null || !departments.Any())
                 return Result<IEnumerable<DepartmentResponseDto>>.Failure(DepartmentError.RetrievalError);
 
             return Result<IEnumerable<DepartmentResponseDto>>.Success(

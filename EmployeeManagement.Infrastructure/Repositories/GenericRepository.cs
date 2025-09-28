@@ -21,9 +21,9 @@ public abstract class GenericRepository<TEntity, TKey> : IGenericRepository<TEnt
         return await _dbSet.FindAsync(id, cancellationToken);
     }
 
-    public async Task<IEnumerable<TEntity>?> GetAllAsync(CancellationToken cancellationToken = default)
+    public IQueryable<TEntity> GetAll()
     {
-        return await _dbSet.ToListAsync(cancellationToken);
+        return _dbSet.AsQueryable();
     }
 
     public async Task<TKey> AddAsync(TEntity entity, CancellationToken cancellationToken = default)

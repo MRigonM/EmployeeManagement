@@ -7,8 +7,6 @@
     </PropertyGroup>
 
     <ItemGroup>
-      <Folder Include="Mappings\" />
-      <Folder Include="Services\" />
       <Folder Include="Validators\" />
     </ItemGroup>
 
@@ -17,6 +15,7 @@
     </ItemGroup>
 
     <ItemGroup>
+      <PackageReference Include="AutoMapper" Version="13.0.1" />
       <PackageReference Include="Microsoft.AspNetCore.Identity" Version="2.3.1" />
     </ItemGroup>
 

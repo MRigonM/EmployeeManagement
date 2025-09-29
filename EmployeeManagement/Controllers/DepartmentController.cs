@@ -32,7 +32,7 @@ public class DepartmentController : ApiBaseController
 
     [HttpPost("Create")]
     [Authorize(Roles = "Admin")]
-    public async Task<IActionResult> Create([FromBody] DepartmentRequestDto dto, CancellationToken cancellationToken)
+    public async Task<IActionResult> Create([FromBody] DepartmentCreateDto dto, CancellationToken cancellationToken)
     {
         var result = await _departmentService.CreateAsync(dto, cancellationToken);
         return FromResult(result);
@@ -40,7 +40,7 @@ public class DepartmentController : ApiBaseController
     
     [HttpPut("Update/{id:int}")]
     [Authorize(Roles = "Admin")]
-    public async Task<IActionResult> Update(int id, [FromBody] DepartmentRequestDto dto, CancellationToken cancellationToken)
+    public async Task<IActionResult> Update(int id, [FromBody] DepartmentUpdateDto dto, CancellationToken cancellationToken)
     {
         var result = await _departmentService.UpdateAsync(id, dto, cancellationToken);
         return FromResult(result);

@@ -12,7 +12,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace EmployeeManagement.Infrastructure.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20250928173211_InitialCreate")]
+    [Migration("20250929125828_InitialCreate")]
     partial class InitialCreate
     {
         /// <inheritdoc />
@@ -322,7 +322,7 @@ namespace EmployeeManagement.Infrastructure.Migrations
                     b.HasOne("EmployeeManagement.Domain.Entities.Department", "Department")
                         .WithMany()
                         .HasForeignKey("DepartmentId")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
                     b.Navigation("Department");

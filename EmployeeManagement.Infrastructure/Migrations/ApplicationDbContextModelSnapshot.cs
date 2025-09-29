@@ -319,7 +319,7 @@ namespace EmployeeManagement.Infrastructure.Migrations
                     b.HasOne("EmployeeManagement.Domain.Entities.Department", "Department")
                         .WithMany()
                         .HasForeignKey("DepartmentId")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
                     b.Navigation("Department");

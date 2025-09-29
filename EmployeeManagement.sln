@@ -1,5 +1,6 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
+# 
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EmployeeManagement", "EmployeeManagement\EmployeeManagement.csproj", "{D81D2557-0D78-49A8-B8C9-1234633140FF}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EmployeeManagement.Domain", "EmployeeManagement.Domain\EmployeeManagement.Domain.csproj", "{7DD3E9F6-9ED0-410E-99E0-3208F3A97760}"
@@ -7,6 +8,8 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EmployeeManagement.Application", "EmployeeManagement.Application\EmployeeManagement.Application.csproj", "{B10D7ECE-8E3B-4D70-8C4E-C2E86C6B424C}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EmployeeManagement.Infrastructure", "EmployeeManagement.Infrastructure\EmployeeManagement.Infrastructure.csproj", "{0F478EB6-3445-44C1-A65B-1C7A4704EA02}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EmployeeManagement.Tests", "EmployeeManagement.Tests\EmployeeManagement.Tests.csproj", "{C822D09E-1139-4E48-BED8-238043B84DF8}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -30,5 +33,9 @@ Global
 		{0F478EB6-3445-44C1-A65B-1C7A4704EA02}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{0F478EB6-3445-44C1-A65B-1C7A4704EA02}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{0F478EB6-3445-44C1-A65B-1C7A4704EA02}.Release|Any CPU.Build.0 = Release|Any CPU
+		{C822D09E-1139-4E48-BED8-238043B84DF8}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C822D09E-1139-4E48-BED8-238043B84DF8}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C822D09E-1139-4E48-BED8-238043B84DF8}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C822D09E-1139-4E48-BED8-238043B84DF8}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal

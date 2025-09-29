@@ -1,7 +1,7 @@
 ﻿using EmployeeManagement.Application.DataTransferObjects.Identity;
 using FluentValidation;
 
-namespace EmployeeManagement.Application.Validators;
+namespace EmployeeManagement.Application.Validators.Identity;
 
 public class LoginValidator : AbstractValidator<LoginDto>
 {

@@ -35,7 +35,7 @@ public interface IDepartmentService
     /// A <see cref="Result{T}"/> containing the ID of the newly created department,
     /// or an error if creation fails.
     /// </returns>
-    Task<Result<int>> CreateAsync(DepartmentRequestDto dto, CancellationToken cancellationToken = default);
+    Task<Result<DepartmentResponseDto>> CreateAsync(DepartmentCreateDto dto, CancellationToken cancellationToken = default);
 
     /// <summary>
     /// Updates an existing department.
@@ -47,7 +47,7 @@ public interface IDepartmentService
     /// A <see cref="Result{T}"/> containing true if the update succeeded,
     /// or an error if the department was not found, no changes were detected, or the update failed.
     /// </returns>
-    Task<Result<bool>> UpdateAsync(int id, DepartmentRequestDto dto, CancellationToken cancellationToken = default);
+    Task<Result<DepartmentResponseDto>> UpdateAsync(int id, DepartmentUpdateDto dto, CancellationToken cancellationToken = default);
 
     /// <summary>
     /// Deletes a department.
@@ -68,5 +68,5 @@ public interface IDepartmentService
     /// A <see cref="Result{T}"/> containing the total number of departments,
     /// or an error if counting fails.
     /// </returns>
-    Task<Result<int>> GetTotalDepartmentsAsync(CancellationToken cancellationToken = default);
+    Task<Result<DepartmentSummaryDto>> GetTotalDepartmentsAsync(CancellationToken cancellationToken = default);
 }

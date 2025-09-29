@@ -14,6 +14,13 @@ public class EmployeeRepository : GenericRepository<Employee, int>, IEmployeeRep
         _context = context;
     }
 
+    public async Task<Employee?> GetEmployeeByIdAsync(int id)
+    {
+        return await _context.Employees
+            .Include(e => e.Department)
+            .FirstOrDefaultAsync(e => e.Id == id);
+    }
+
     public IQueryable<Employee> GetByDepartment(int departmentId)
     {
         return _context.Employees

@@ -1,11 +1,11 @@
 ﻿using EmployeeManagement.Application.DataTransferObjects.Employee;
 using FluentValidation;
 
-namespace EmployeeManagement.Application.Validators
+namespace EmployeeManagement.Application.Validators.Employee
 {
-    public class EmployeeRequestValidator : AbstractValidator<EmployeeRequestDto>
+    public class EmployeeCreateValidator : AbstractValidator<EmployeeCreateDto>
     {
-        public EmployeeRequestValidator()
+        public EmployeeCreateValidator()
         {
             RuleFor(x => x.Name)
                 .NotEmpty().WithMessage("Name is required.")

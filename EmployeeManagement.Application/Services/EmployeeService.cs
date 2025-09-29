@@ -28,13 +28,13 @@ public class EmployeeService : IEmployeeService
         _mapper = mapper;
     }
 
-    public async Task<Result<EmployeeResponseDto>> GetByIdAsync(int id, CancellationToken cancellationToken = default)
+    public async Task<Result<EmployeeResponseDto>> GetByIdAsync(int id)
     {
         try
         {
             _logger.LogInformation("Retrieving Employee with Id: {Id}", id);
 
-            var employee = await _employeeRepository.GetByIdAsync(id, cancellationToken);
+            var employee = await _employeeRepository.GetEmployeeByIdAsync(id);
             
             if (employee is null)
                 return Result<EmployeeResponseDto>.Failure(EmployeeError.NotFound(id));
@@ -96,34 +96,37 @@ public class EmployeeService : IEmployeeService
         }
     }
 
-    public async Task<Result<int>> CreateAsync(EmployeeRequestDto employeeRequest, CancellationToken cancellationToken = default)
+    public async Task<Result<EmployeeResponseDto>> CreateAsync(EmployeeCreateDto employeeCreate,CancellationToken cancellationToken = default)
     {
         try
         {
-            _logger.LogInformation("Creating Employee: {Name} {Surname}", employeeRequest.Name, employeeRequest.Surname);
+            _logger.LogInformation("Creating Employee: {Name} {Surname}", employeeCreate.Name, employeeCreate.Surname);
 
-            var employee = _mapper.Map<Employee>(employeeRequest);
+            var employee = _mapper.Map<Employee>(employeeCreate);
             employee.DateOfJoining = DateTime.UtcNow;
 
-            var id = await _employeeRepository.AddAsync(employee, cancellationToken);
+            await _employeeRepository.AddAsync(employee, cancellationToken);
             var saved = await _unitOfWork.SaveChangesAsync(cancellationToken) > 0;
 
             if (!saved)
-                return Result<int>.Failure(EmployeeError.CreationFailed);
+                return Result<EmployeeResponseDto>.Failure(EmployeeError.CreationFailed);
 
-            _logger.LogInformation("Successfully created Employee with Id: {Id}", id);
-            
-            return Result<int>.Success(id);
+            _logger.LogInformation("Successfully created Employee with Id: {Id}", employee.Id);
+
+            var createdEmployee = await _employeeRepository.GetEmployeeByIdAsync(employee.Id);
+
+            return Result<EmployeeResponseDto>.Success(
+                _mapper.Map<EmployeeResponseDto>(createdEmployee!));
         }
         catch (Exception ex)
         {
-            _logger.LogError(ex, "Error creating Employee: {Name} {Surname}", employeeRequest.Name, employeeRequest.Surname);
-            
-            return Result<int>.Failure(EmployeeError.CreationUnexpectedError);
+            _logger.LogError(ex, "Error creating Employee: {Name} {Surname}", employeeCreate.Name, employeeCreate.Surname);
+            return Result<EmployeeResponseDto>.Failure(EmployeeError.CreationUnexpectedError);
         }
     }
 
-    public async Task<Result<bool>> UpdateAsync(int id, EmployeeRequestDto employeeRequest, CancellationToken cancellationToken = default)
+
+    public async Task<Result<EmployeeResponseDto>> UpdateAsync(int id,EmployeeUpdateDto employeeUpdate,CancellationToken cancellationToken = default)
     {
         try
         {
@@ -131,22 +134,28 @@ public class EmployeeService : IEmployeeService
 
             var employee = await _employeeRepository.GetByIdAsync(id, cancellationToken);
             if (employee is null)
-                return Result<bool>.Failure(EmployeeError.NotFound(id));
+                return Result<EmployeeResponseDto>.Failure(EmployeeError.NotFound(id));
 
-            _mapper.Map(employeeRequest, employee);
+            _mapper.Map(employeeUpdate, employee);
 
             _employeeRepository.Update(employee);
             var updated = await _unitOfWork.SaveChangesAsync(cancellationToken) > 0;
 
-            return updated ? Result<bool>.Success(true)
-                : Result<bool>.Failure(EmployeeError.NoChangesDetected);
+            if (!updated)
+                return Result<EmployeeResponseDto>.Failure(EmployeeError.NoChangesDetected);
+
+            var updatedEmployee = await _employeeRepository.GetEmployeeByIdAsync(id);
+
+            return Result<EmployeeResponseDto>.Success(
+                _mapper.Map<EmployeeResponseDto>(updatedEmployee!));
         }
         catch (Exception ex)
         {
             _logger.LogError(ex, "Error updating Employee with Id: {Id}", id);
-            return Result<bool>.Failure(EmployeeError.UpdateUnexpectedError);
+            return Result<EmployeeResponseDto>.Failure(EmployeeError.UpdateUnexpectedError);
         }
     }
+
 
     public async Task<Result<bool>> DeleteAsync(int id, CancellationToken cancellationToken = default)
     {

@@ -14,7 +14,7 @@ public interface IEmployeeService
     /// A <see cref="Result{T}"/> containing an <see cref="EmployeeResponseDto"/> if found,
     /// or an error if not found or retrieval fails.
     /// </returns>
-    Task<Result<EmployeeResponseDto>> GetByIdAsync(int id, CancellationToken cancellationToken = default);
+    Task<Result<EmployeeResponseDto>> GetByIdAsync(int id);
 
     /// <summary>
     /// Retrieves all employees in the system.
@@ -46,7 +46,7 @@ public interface IEmployeeService
     /// A <see cref="Result{T}"/> containing the ID of the newly created employee,
     /// or an error if creation fails.
     /// </returns>
-    Task<Result<int>> CreateAsync(EmployeeRequestDto dto, CancellationToken cancellationToken = default);
+    Task<Result<EmployeeResponseDto>> CreateAsync(EmployeeCreateDto dto, CancellationToken cancellationToken = default);
 
     /// <summary>
     /// Updates an existing employee.
@@ -58,7 +58,7 @@ public interface IEmployeeService
     /// A <see cref="Result{T}"/> containing true if the update succeeded,
     /// or an error if the employee was not found, no changes were detected, or the update failed.
     /// </returns>
-    Task<Result<bool>> UpdateAsync(int id, EmployeeRequestDto dto, CancellationToken cancellationToken = default);
+    Task<Result<EmployeeResponseDto>> UpdateAsync(int id,EmployeeUpdateDto employeeUpdate,CancellationToken cancellationToken = default);
 
     /// <summary>
     /// Deletes an employee.

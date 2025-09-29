@@ -1,4 +1,4 @@
-using EmployeeManagement.Application.Validators;
+using EmployeeManagement.Application.Validators.Identity;
 using EmployeeManagement.Extensions;
 using EmployeeManagement.Infrastructure.Data;
 using FluentValidation.AspNetCore;

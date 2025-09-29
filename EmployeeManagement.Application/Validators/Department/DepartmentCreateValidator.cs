@@ -1,11 +1,11 @@
 ﻿using EmployeeManagement.Application.DataTransferObjects.Department;
 using FluentValidation;
 
-namespace EmployeeManagement.Application.Validators
+namespace EmployeeManagement.Application.Validators.Department
 {
-    public class DepartmentRequestValidator : AbstractValidator<DepartmentRequestDto>
+    public class DepartmentCreateValidator : AbstractValidator<DepartmentCreateDto>
     {
-        public DepartmentRequestValidator()
+        public DepartmentCreateValidator()
         {
             RuleFor(x => x.Name)
                 .NotEmpty().WithMessage("Department name is required.")

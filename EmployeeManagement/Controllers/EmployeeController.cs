@@ -24,9 +24,9 @@ public class EmployeeController : ApiBaseController
 
     [HttpGet("{id:int}")]
     [Authorize(Roles = "Admin,Employee")]
-    public async Task<IActionResult> GetById(int id, CancellationToken cancellationToken)
+    public async Task<IActionResult> GetById(int id)
     {
-        var result = await _employeeService.GetByIdAsync(id, cancellationToken);
+        var result = await _employeeService.GetByIdAsync(id);
         return FromResult(result);
     }
 
@@ -40,7 +40,7 @@ public class EmployeeController : ApiBaseController
 
     [HttpPost]
     [Authorize(Roles = "Admin")]
-    public async Task<IActionResult> Create([FromBody] EmployeeRequestDto dto, CancellationToken cancellationToken)
+    public async Task<IActionResult> Create([FromBody] EmployeeCreateDto dto, CancellationToken cancellationToken)
     {
         var result = await _employeeService.CreateAsync(dto, cancellationToken);
         return FromResult(result);
@@ -48,7 +48,7 @@ public class EmployeeController : ApiBaseController
 
     [HttpPut("{id:int}")]
     [Authorize(Roles = "Admin")]
-    public async Task<IActionResult> Update(int id, [FromBody] EmployeeRequestDto dto, CancellationToken cancellationToken)
+    public async Task<IActionResult> Update(int id, [FromBody] EmployeeUpdateDto dto, CancellationToken cancellationToken)
     {
         var result = await _employeeService.UpdateAsync(id, dto, cancellationToken);
         return FromResult(result);

@@ -1,6 +1,6 @@
 ﻿namespace EmployeeManagement.Application.DataTransferObjects.Employee;
 
-public class EmployeeRequestDto
+public class EmployeeCreateDto
 {
     public string Name { get; set; } = string.Empty;
     public string Surname { get; set; } = string.Empty;

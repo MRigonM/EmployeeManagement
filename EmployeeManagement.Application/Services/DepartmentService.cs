@@ -71,31 +71,37 @@ public class DepartmentService : IDepartmentService
         }
     }
 
-    public async Task<Result<int>> CreateAsync(DepartmentRequestDto departmentRequest, CancellationToken cancellationToken = default)
+    public async Task<Result<DepartmentResponseDto>> CreateAsync(DepartmentCreateDto departmentCreate,
+        CancellationToken cancellationToken = default)
     {
         try
         {
-            _logger.LogInformation("Creating Department: {Name}", departmentRequest.Name);
+            _logger.LogInformation("Creating Department: {Name}", departmentCreate.Name);
 
-            var department = _mapper.Map<Department>(departmentRequest);
+            var department = _mapper.Map<Department>(departmentCreate);
 
             var id = await _departmentRepository.AddAsync(department, cancellationToken);
             var saved = await _unitOfWork.SaveChangesAsync(cancellationToken) > 0;
 
             if (!saved)
-                return Result<int>.Failure(DepartmentError.CreationFailed);
+                return Result<DepartmentResponseDto>.Failure(DepartmentError.CreationFailed);
 
             _logger.LogInformation("Successfully created Department with Id: {Id}", id);
-            return Result<int>.Success(id);
+
+            var createdDepartment = await _departmentRepository.GetByIdAsync(id, cancellationToken);
+
+            return Result<DepartmentResponseDto>.Success(
+                _mapper.Map<DepartmentResponseDto>(createdDepartment));
         }
         catch (Exception ex)
         {
-            _logger.LogError(ex, "Error creating Department: {Name}", departmentRequest.Name);
-            return Result<int>.Failure(DepartmentError.CreationUnexpectedError);
+            _logger.LogError(ex, "Error creating Department: {Name}", departmentCreate.Name);
+            return Result<DepartmentResponseDto>.Failure(DepartmentError.CreationUnexpectedError);
         }
     }
 
-    public async Task<Result<bool>> UpdateAsync(int id, DepartmentRequestDto departmentRequest, CancellationToken cancellationToken = default)
+    public async Task<Result<DepartmentResponseDto>> UpdateAsync(int id, DepartmentUpdateDto updateDto,
+        CancellationToken cancellationToken = default)
     {
         try
         {
@@ -103,21 +109,26 @@ public class DepartmentService : IDepartmentService
 
             var department = await _departmentRepository.GetByIdAsync(id, cancellationToken);
             if (department is null)
-                return Result<bool>.Failure(DepartmentError.NotFound(id));
+                return Result<DepartmentResponseDto>.Failure(DepartmentError.NotFound(id));
 
-            _mapper.Map(departmentRequest, department);
+            // Apply only provided fields
+            _mapper.Map(updateDto, department);
 
             _departmentRepository.Update(department);
             var updated = await _unitOfWork.SaveChangesAsync(cancellationToken) > 0;
 
-            return updated
-                ? Result<bool>.Success(true)
-                : Result<bool>.Failure(DepartmentError.NoChangesDetected);
+            if (!updated)
+                return Result<DepartmentResponseDto>.Failure(DepartmentError.NoChangesDetected);
+
+            _logger.LogInformation("Successfully updated Department with Id: {Id}", id);
+
+            return Result<DepartmentResponseDto>.Success(
+                _mapper.Map<DepartmentResponseDto>(department));
         }
         catch (Exception ex)
         {
             _logger.LogError(ex, "Error updating Department with Id: {Id}", id);
-            return Result<bool>.Failure(DepartmentError.UpdateUnexpectedError);
+            return Result<DepartmentResponseDto>.Failure(DepartmentError.UpdateUnexpectedError);
         }
     }
 
@@ -148,18 +159,27 @@ public class DepartmentService : IDepartmentService
         }
     }
 
-    public async Task<Result<int>> GetTotalDepartmentsAsync(CancellationToken cancellationToken = default)
+    public async Task<Result<DepartmentSummaryDto>> GetTotalDepartmentsAsync(
+        CancellationToken cancellationToken = default)
     {
         try
         {
             _logger.LogInformation("Counting all departments...");
             var count = await _departmentRepository.CountAsync(cancellationToken);
-            return Result<int>.Success(count);
+
+            var summary = new DepartmentSummaryDto
+            {
+                TotalDepartments = count,
+                RetrievedAt = DateTime.UtcNow
+            };
+
+            return Result<DepartmentSummaryDto>.Success(summary);
         }
         catch (Exception ex)
         {
             _logger.LogError(ex, "Error counting departments");
-            return Result<int>.Failure(DepartmentError.RetrievalError);
+            return Result<DepartmentSummaryDto>.Failure(DepartmentError.RetrievalError);
         }
     }
+
 }

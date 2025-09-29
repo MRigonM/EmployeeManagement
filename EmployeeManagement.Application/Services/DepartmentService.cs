@@ -71,8 +71,7 @@ public class DepartmentService : IDepartmentService
         }
     }
 
-    public async Task<Result<DepartmentResponseDto>> CreateAsync(DepartmentCreateDto departmentCreate,
-        CancellationToken cancellationToken = default)
+    public async Task<Result<DepartmentResponseDto>> CreateAsync(DepartmentCreateDto departmentCreate,CancellationToken cancellationToken = default)
     {
         try
         {
@@ -80,18 +79,18 @@ public class DepartmentService : IDepartmentService
 
             var department = _mapper.Map<Department>(departmentCreate);
 
-            var id = await _departmentRepository.AddAsync(department, cancellationToken);
+            await _departmentRepository.AddAsync(department, cancellationToken);
             var saved = await _unitOfWork.SaveChangesAsync(cancellationToken) > 0;
 
             if (!saved)
                 return Result<DepartmentResponseDto>.Failure(DepartmentError.CreationFailed);
 
-            _logger.LogInformation("Successfully created Department with Id: {Id}", id);
+            _logger.LogInformation("Successfully created Department with Id: {Id}", department.Id);
 
-            var createdDepartment = await _departmentRepository.GetByIdAsync(id, cancellationToken);
+            var createdDepartment = await _departmentRepository.GetByIdAsync(department.Id, cancellationToken);
 
             return Result<DepartmentResponseDto>.Success(
-                _mapper.Map<DepartmentResponseDto>(createdDepartment));
+                _mapper.Map<DepartmentResponseDto>(createdDepartment!));
         }
         catch (Exception ex)
         {
@@ -99,6 +98,7 @@ public class DepartmentService : IDepartmentService
             return Result<DepartmentResponseDto>.Failure(DepartmentError.CreationUnexpectedError);
         }
     }
+
 
     public async Task<Result<DepartmentResponseDto>> UpdateAsync(int id, DepartmentUpdateDto updateDto,
         CancellationToken cancellationToken = default)

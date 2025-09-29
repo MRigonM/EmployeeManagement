@@ -96,7 +96,7 @@ public class EmployeeService : IEmployeeService
         }
     }
 
-    public async Task<Result<int>> CreateAsync(EmployeeCreateDto employeeCreate, CancellationToken cancellationToken = default)
+    public async Task<Result<EmployeeResponseDto>> CreateAsync(EmployeeCreateDto employeeCreate,CancellationToken cancellationToken = default)
     {
         try
         {
@@ -105,23 +105,26 @@ public class EmployeeService : IEmployeeService
             var employee = _mapper.Map<Employee>(employeeCreate);
             employee.DateOfJoining = DateTime.UtcNow;
 
-            var id = await _employeeRepository.AddAsync(employee, cancellationToken);
+            await _employeeRepository.AddAsync(employee, cancellationToken);
             var saved = await _unitOfWork.SaveChangesAsync(cancellationToken) > 0;
 
             if (!saved)
-                return Result<int>.Failure(EmployeeError.CreationFailed);
+                return Result<EmployeeResponseDto>.Failure(EmployeeError.CreationFailed);
 
-            _logger.LogInformation("Successfully created Employee with Id: {Id}", id);
-            
-            return Result<int>.Success(id);
+            _logger.LogInformation("Successfully created Employee with Id: {Id}", employee.Id);
+
+            var createdEmployee = await _employeeRepository.GetEmployeeByIdAsync(employee.Id);
+
+            return Result<EmployeeResponseDto>.Success(
+                _mapper.Map<EmployeeResponseDto>(createdEmployee!));
         }
         catch (Exception ex)
         {
             _logger.LogError(ex, "Error creating Employee: {Name} {Surname}", employeeCreate.Name, employeeCreate.Surname);
-            
-            return Result<int>.Failure(EmployeeError.CreationUnexpectedError);
+            return Result<EmployeeResponseDto>.Failure(EmployeeError.CreationUnexpectedError);
         }
     }
+
 
     public async Task<Result<EmployeeResponseDto>> UpdateAsync(int id,EmployeeUpdateDto employeeUpdate,CancellationToken cancellationToken = default)
     {

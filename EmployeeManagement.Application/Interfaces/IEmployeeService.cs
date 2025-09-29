@@ -46,7 +46,7 @@ public interface IEmployeeService
     /// A <see cref="Result{T}"/> containing the ID of the newly created employee,
     /// or an error if creation fails.
     /// </returns>
-    Task<Result<int>> CreateAsync(EmployeeCreateDto dto, CancellationToken cancellationToken = default);
+    Task<Result<EmployeeResponseDto>> CreateAsync(EmployeeCreateDto dto, CancellationToken cancellationToken = default);
 
     /// <summary>
     /// Updates an existing employee.

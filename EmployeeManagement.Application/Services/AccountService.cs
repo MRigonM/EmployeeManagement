@@ -71,7 +71,7 @@ public class AccountService : IAccountService
 
             await _userManager.AddToRoleAsync(user, "Employee");
 
-            var employeeDto = new EmployeeRequestDto
+            var employeeDto = new EmployeeCreateDto
             {
                 Name = dto.FirstName,
                 Surname = dto.LastName,

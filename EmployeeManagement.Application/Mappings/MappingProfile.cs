@@ -13,11 +13,17 @@ public class MappingProfile : Profile
         CreateMap<Employee, EmployeeResponseDto>()
             .ForMember(dest => dest.DepartmentName, opt => opt.MapFrom(src => src.Department.Name));
 
-        CreateMap<EmployeeRequestDto, Employee>()
+        CreateMap<EmployeeCreateDto, Employee>()
             .ForMember(dest => dest.Id, opt => opt.Ignore())
             .ForMember(dest => dest.DateOfJoining, opt => opt.Ignore());
+        
+        CreateMap<EmployeeUpdateDto, Employee>()
+            .ForAllMembers(opt => opt.Condition(
+                (src, dest, srcMember) =>
+                    srcMember != null && !(srcMember is string str && string.IsNullOrWhiteSpace(str))
+            ));
 
-        CreateMap<RegisterEmployeeDto, EmployeeRequestDto>()
+        CreateMap<RegisterEmployeeDto, EmployeeCreateDto>()
             .ForMember(dest => dest.Name, opt => opt.MapFrom(src => src.FirstName))
             .ForMember(dest => dest.Surname, opt => opt.MapFrom(src => src.LastName))
             .ForMember(dest => dest.Email, opt => opt.MapFrom(src => src.Email))
@@ -25,7 +31,13 @@ public class MappingProfile : Profile
             .ForMember(dest => dest.DepartmentId, opt => opt.MapFrom(src => src.DepartmentId));
 
         CreateMap<Department, DepartmentResponseDto>();
-        CreateMap<DepartmentRequestDto, Department>()
+        CreateMap<DepartmentCreateDto, Department>()
             .ForMember(dest => dest.Id, opt => opt.Ignore());
+        
+        CreateMap<DepartmentUpdateDto, Department>()
+            .ForAllMembers(opt => opt.Condition(
+                (src, dest, srcMember) =>
+                    srcMember != null && !(srcMember is string str && string.IsNullOrWhiteSpace(str))
+            ));
     }
 }
